@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: blogdb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      context: ./blog_platform_backend
+    command: gunicorn blog_platform_backend.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - ./blog_platform_backend:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/blogdb
+      - DJANGO_SETTINGS_MODULE=blog_platform_backend.settings
+
+  frontend:
+    build:
+      context: ./blog-platform-frontend
+    volumes:
+      - ./blog-platform-frontend:/app
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
+    command: ["npx", "serve", "-s", "build", "-l", "3000"]
+
+volumes:
+  postgres_data:
