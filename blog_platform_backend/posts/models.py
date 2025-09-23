@@ -28,6 +28,14 @@ class Post(models.Model):
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
 
+    def increment_views(self):
+        self.views += 1
+        self.save(update_fields=["views"])
+
+    def upvote(self, user=None):
+        self.upvotes += 1
+        self.save(update_fields=["upvotes"])
+
     def __str__(self):
         return self.title
 
@@ -40,29 +48,9 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     upvotes = models.IntegerField(default=0)
 
+    def upvote(self, user=None):
+        self.upvotes += 1
+        self.save(update_fields=["upvotes"])
+
     def __str__(self):
         return f"Comment by {self.author} on {self.post}"
-    
-    # Add methods for analytics and reputation handling
-
-class Post(models.Model):
-    ...
-    def increment_views(self):
-        self.views += 1
-        self.save(update_fields=["views"])
-
-    def upvote(self, user):
-        self.upvotes += 1
-        self.save(update_fields=["upvotes"])
-        self.author.reputation += 10
-        self.author.save(update_fields=["reputation"])
-
-
-class Comment(models.Model):
-    ...
-    def upvote(self, user):
-        self.upvotes += 1
-        self.save(update_fields=["upvotes"])
-        self.author.reputation += 2
-        self.author.save(update_fields=["reputation"])
-

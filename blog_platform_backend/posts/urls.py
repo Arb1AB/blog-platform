@@ -1,7 +1,8 @@
-# posts/urls.py
 from django.urls import path
-from . import views
+from .views import PostListCreateView, PostDetailView, CommentCreateView
 
 urlpatterns = [
-    path("", views.index, name="posts-index"),
+    path("", PostListCreateView.as_view(), name="post-list"),
+    path("<slug:slug>/", PostDetailView.as_view(), name="post-detail"),
+    path("<slug:slug>/comment/", CommentCreateView.as_view(), name="comment-create"),
 ]

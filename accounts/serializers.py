@@ -8,7 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["id", "username", "email"]
 
 class ProfileSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    user = UserSerializer(read_only=True)
 
     class Meta:
         model = Profile

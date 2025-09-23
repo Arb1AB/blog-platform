@@ -11,8 +11,8 @@ WORKDIR /app
 # Install system deps
 RUN apt-get update && apt-get install -y build-essential libpq-dev && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies (requirements.txt must be in root!)
-COPY requirements.txt /app/
+# Install Python dependencies
+COPY blog_platform_backend/requirements.txt /app/
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
 # Copy project
