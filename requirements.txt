@@ -3,3 +3,8 @@ djangorestframework>=3.14
 psycopg2-binary>=2.9
 django-cors-headers>=4.2
 gunicorn>=21.2
+
+python-dotenv>=1.0        # Load env vars from .env
+whitenoise>=6.6           # Static file serving in production
+black>=24.0               # Code formatter
+flake8>=7.0               # Linter

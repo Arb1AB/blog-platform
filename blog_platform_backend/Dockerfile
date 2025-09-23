@@ -11,15 +11,19 @@ WORKDIR /app
 # Install system deps
 RUN apt-get update && apt-get install -y build-essential libpq-dev && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies (requirements.txt must be in root!)
+# Install Python dependencies
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
 # Copy project
 COPY . /app/
 
+# Add non-root user
+RUN adduser --disabled-password --gecos '' django
+USER django
+
 # Expose port
 EXPOSE 8000
 
-# Start server (migrate + collectstatic + gunicorn)
+# Start server
 CMD sh -c "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn blog_platform_backend.wsgi:application --bind 0.0.0.0:8000"

@@ -4,10 +4,12 @@ from .models import Post, Comment, Tag
 
 User = get_user_model()
 
+
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ["id", "name"]
+
 
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.StringRelatedField(read_only=True)
@@ -19,6 +21,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
     def get_replies(self, obj):
         return CommentSerializer(obj.replies.all(), many=True).data
+
 
 class PostSerializer(serializers.ModelSerializer):
     author = serializers.StringRelatedField(read_only=True)

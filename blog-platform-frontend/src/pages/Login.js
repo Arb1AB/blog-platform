@@ -1,21 +1,23 @@
 import React, { useState } from "react";
-import API from "../api";
+import App from "../App";
 import { useNavigate } from "react-router-dom";
 import Notification from "../components/Notification";
+import { loginUser } from "../api";
 
 function Login() {
   const [form, setForm] = useState({ username: "", password: "" });
   const [notif, setNotif] = useState("");   // ✅ local notification state
   const navigate = useNavigate();
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await API.post("accounts/login/", form);
-      localStorage.setItem("access", res.data.access);
-      localStorage.setItem("refresh", res.data.refresh);
+      const res = await loginUser(form);  // ✅ use the API function
+      localStorage.setItem("access", res.access);
+      localStorage.setItem("refresh", res.refresh);
 
       setNotif("✅ Login successful!");   // ✅ show notification
       setTimeout(() => navigate("/profile"), 1500); // small delay before redirect
@@ -33,8 +35,15 @@ function Login() {
 
       <form onSubmit={handleSubmit}>
         <input name="username" placeholder="Username" onChange={handleChange} />
-        <input type="password" name="password" placeholder="Password" onChange={handleChange} />
-        <button className="btn" type="submit">Login</button>
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          onChange={handleChange}
+        />
+        <button className="btn" type="submit">
+          Login
+        </button>
       </form>
     </div>
   );

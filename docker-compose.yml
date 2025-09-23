@@ -1,3 +1,5 @@
+version: "3.9"
+
 services:
   db:
     image: postgres:15
@@ -12,10 +14,13 @@ services:
 
   backend:
     build:
-      context: .
+      context: ./blog-platform-backend
       dockerfile: Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000   # 👈 dev mode
     volumes:
-      - .:/app
+      - ./blog-platform-backend:/app
+      - media_data:/app/media
+      - static_data:/app/staticfiles
     ports:
       - "8000:8000"
     depends_on:
@@ -23,11 +28,14 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:postgres@db:5432/blogdb
       - DJANGO_SETTINGS_MODULE=blog_platform_backend.settings
+      - SECRET_KEY=supersecretkey
+      - DEBUG=1
+      - ALLOWED_HOSTS=*
 
   frontend:
     build:
-      context: .
-      dockerfile: blog-platform-frontend/Dockerfile
+      context: ./blog-platform-frontend
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     depends_on:
@@ -37,3 +45,8 @@ services:
 
 volumes:
   postgres_data:
+  media_data:
+  static_data:
+
+env_file:
+  - .env

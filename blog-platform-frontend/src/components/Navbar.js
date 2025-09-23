@@ -19,7 +19,9 @@ function Navbar() {
           <>
             <Link to="/profile">Profile</Link>
             <Link to="/posts">Posts</Link>
-            <button className="btn" onClick={handleLogout}>Logout</button>
+            <button className="btn" onClick={handleLogout}>
+              Logout
+            </button>
           </>
         ) : (
           <>

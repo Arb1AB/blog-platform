@@ -37,7 +37,12 @@ function MatrixBackground() {
     return () => clearInterval(interval);
   }, []);
 
-  return <canvas ref={canvasRef} style={{ position: "fixed", top: 0, left: 0, zIndex: -1 }} />;
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{ position: "fixed", top: 0, left: 0, zIndex: -1 }}
+    />
+  );
 }
 
 export default MatrixBackground;

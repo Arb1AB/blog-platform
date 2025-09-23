@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     # Third-party
     "rest_framework",
     "corsheaders",
+    "whitenoise.runserver_nostatic",  # ✅ helps dev mode with WhiteNoise
 
     # Local apps
     "accounts",
@@ -30,6 +31,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # ✅ added
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -85,7 +87,8 @@ USE_TZ = True
 # Static & Media
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]  # ✅ add this
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"  # ✅
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
@@ -95,6 +98,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.BasicAuthentication",
+        # "rest_framework_simplejwt.authentication.JWTAuthentication",  # ✅ enable later
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",
@@ -103,5 +107,10 @@ REST_FRAMEWORK = {
 
 # CORS
 CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOWED_ORIGINS = [  # ✅ safer for prod
+#     "http://localhost:3000",
+#     "http://127.0.0.1:3000",
+#     "https://yourdomain.com",
+# ]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

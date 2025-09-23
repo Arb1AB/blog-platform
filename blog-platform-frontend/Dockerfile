@@ -1,21 +1,31 @@
-# Use official Node image
-FROM node:18-alpine
+# ---------- Build Stage ----------
+FROM node:18-alpine AS build
 
 # Set working directory
 WORKDIR /app
 
-# Copy package.json and install dependencies
+# Copy dependency files first (better cache)
 COPY blog-platform-frontend/package*.json ./
+
+# Install dependencies
 RUN npm install --legacy-peer-deps
 
-# Copy all frontend files
+# Copy source code
 COPY blog-platform-frontend/ ./
 
-# Build the app
+# Build app
 RUN npm run build
 
-# Install serve to run production build
+# ---------- Production Stage ----------
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install 'serve' only
 RUN npm install -g serve
+
+# Copy production build from build stage
+COPY --from=build /app/build ./build
 
 # Expose port
 EXPOSE 3000

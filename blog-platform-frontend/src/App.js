@@ -10,6 +10,7 @@ import PostDetail from "./pages/PostDetail";
 import NewPost from "./pages/NewPost";
 import AdminDashboard from "./pages/AdminDashboard";
 import MatrixBackground from "./components/MatrixBackground";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   return (
@@ -25,11 +26,12 @@ function App() {
         <Route path="/posts/:id" element={<PostDetail />} />
         <Route path="/posts/new" element={<NewPost />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+        <Route path="/posts/new" element={<PrivateRoute><NewPost /></PrivateRoute>} />
+<Route path="/admin-dashboard" element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
       </Routes>
     </div>
   );
 }
-
-
 
 export default App;

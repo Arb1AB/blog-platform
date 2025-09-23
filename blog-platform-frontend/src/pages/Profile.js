@@ -1,18 +1,28 @@
 import React, { useEffect, useState } from "react";
-import API from "../api";
+import { fetchProfile, updateProfile } from "../api";
+import { useNavigate } from "react-router-dom";
 
 function Profile() {
   const [profile, setProfile] = useState(null);
   const [form, setForm] = useState({ bio: "", avatar: null });
+  const navigate = useNavigate();
 
   useEffect(() => {
-    API.get("accounts/profile/")
-      .then((res) => {
-        setProfile(res.data);
-        setForm({ bio: res.data.bio || "", avatar: null });
-      })
-      .catch(() => setProfile(null));
-  }, []);
+    const token = localStorage.getItem("token");
+    if (token) {
+      fetchProfile(token)
+        .then((data) => {
+          setProfile(data);
+          setForm({ bio: data.bio || "", avatar: null });
+        })
+        .catch(() => {
+          setProfile(null);
+          navigate("/login");
+        });
+    } else {
+      navigate("/login");
+    }
+  }, [navigate]);
 
   const handleChange = (e) => {
     if (e.target.name === "avatar") {
@@ -24,15 +34,22 @@ function Profile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("bio", form.bio);
     if (form.avatar) formData.append("avatar", form.avatar);
 
-    await API.put("accounts/profile/", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-
-    window.location.reload();
+    try {
+      await updateProfile(token, formData);
+      window.location.reload();
+    } catch (err) {
+      alert("Update failed");
+    }
   };
 
   if (!profile) return <p>Loading...</p>;
