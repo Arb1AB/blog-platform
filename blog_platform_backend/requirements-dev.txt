@@ -1,0 +1,4 @@
+-r requirements.txt   # include everything from main requirements
+
+black
+flake8

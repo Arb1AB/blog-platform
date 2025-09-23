@@ -5,13 +5,13 @@ FROM node:18-alpine AS build
 WORKDIR /app
 
 # Copy dependency files first (better cache)
-COPY blog-platform-frontend/package*.json ./
+COPY package*.json ./
 
 # Install dependencies
 RUN npm install --legacy-peer-deps
 
-# Copy source code
-COPY blog-platform-frontend/ ./
+# Copy source code (from build context = ./blog-platform-frontend)
+COPY . ./
 
 # Build app
 RUN npm run build
