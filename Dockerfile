@@ -11,9 +11,9 @@ WORKDIR /app
 # Install system deps
 RUN apt-get update && apt-get install -y build-essential libpq-dev && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
-COPY blog_platform_backend/requirements.txt /app/
-RUN pip install --no-cache-dir -r /app/requirements.txt
+# Install Python dependencies - FIXED PATH
+COPY requirements.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy project
 COPY . /app/
@@ -21,5 +21,5 @@ COPY . /app/
 # Expose port
 EXPOSE 8000
 
-# Start server (migrate + collectstatic + gunicorn)
+# Start server
 CMD sh -c "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn blog_platform_backend.wsgi:application --bind 0.0.0.0:8000"
