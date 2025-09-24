@@ -1,18 +1,16 @@
 from django.urls import path
-from .views import (
-    PostListCreateView,
-    PostDetailView,
-    CommentCreateView,
-    PostUpvoteView,
-    CommentUpvoteView,
-    AnalyticsOverviewView,
-)
+from django.http import JsonResponse
+from .views import PostListCreateView, PostDetailView
+
+# Root view for /api/posts/
+def posts_root(request):
+    return JsonResponse({
+        "list_create": "/api/posts/",          # list all posts / create new post
+        "detail": "/api/posts/<id>/",          # view, update, delete a post
+    })
 
 urlpatterns = [
-    path("", PostListCreateView.as_view(), name="post-list"),
-    path("<slug:slug>/", PostDetailView.as_view(), name="post-detail"),
-    path("<slug:slug>/comment/", CommentCreateView.as_view(), name="comment-create"),
-    path("<int:pk>/upvote/", PostUpvoteView.as_view(), name="post-upvote"),
-    path("comments/<int:pk>/upvote/", CommentUpvoteView.as_view(), name="comment-upvote"),
-    path("analytics/overview/", AnalyticsOverviewView.as_view(), name="analytics-overview"),
+    path("", posts_root, name="posts-root"),        # 👈 now /api/posts/ root shows JSON
+    path("", PostListCreateView.as_view(), name="post-list-create"),
+    path("<int:pk>/", PostDetailView.as_view(), name="post-detail"),
 ]

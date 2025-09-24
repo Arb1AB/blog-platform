@@ -43,6 +43,10 @@ export async function registerUser(userData) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(userData),
   });
+
+  if (!response.ok) {
+    throw new Error("Registration failed");
+  }
   return response.json();
 }
 
@@ -52,7 +56,11 @@ export async function loginUser(credentials) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(credentials),
   });
-  return response.json();
+
+  if (!response.ok) {
+    throw new Error("Login failed");
+  }
+  return response.json(); // ✅ should return { access, refresh }
 }
 
 // 🔹 Profile
@@ -91,9 +99,20 @@ export async function addComment(postId, token, commentData) {
 }
 
 export async function upvoteComment(commentId, token) {
-  const response = await fetch(`${API_BASE_URL}/posts/comments/${commentId}/upvote/`, {
-    method: "POST",
+  const response = await fetch(
+    `${API_BASE_URL}/posts/comments/${commentId}/upvote/`,
+    {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+  return response.json();
+}
+
+export async function deletePost(id, token) {
+  const response = await fetch(`${API_BASE_URL}/posts/${id}/`, {
+    method: "DELETE",
     headers: { Authorization: `Bearer ${token}` },
   });
-  return response.json();
+  return response;
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchProfile, updateProfile } from "../api";
+import { fetchProfile, updateProfile } from "../api"; // import needed functions
 import { useNavigate } from "react-router-dom";
 
 function Profile() {
